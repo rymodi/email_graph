@@ -40,6 +40,11 @@ describe EmailGraph::DirectedEdge do
     expect{ EmailGraph::DirectedEdge.new(nil, 1) }.to raise_exception(ArgumentError)
   end
 
+  it 'converts into a string' do
+    edge = EmailGraph::DirectedEdge.new("v", "w")
+    expect(edge.to_s).to eq("(v-w)")
+  end
+
 end
 
 
