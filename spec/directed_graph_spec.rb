@@ -32,6 +32,12 @@ describe EmailGraph::DirectedGraph do
     expect(g.edges_to(2).map(&:from)).to contain_exactly(1)
   end
 
+  it 'iterates through each edge and its inverse' do
+    expected_yield = [ [g.edge(1, 2), g.edge(2, 1)],
+                       [g.edge(2, 3), nil] ]
+
+    expect{ |b| g.with_each_edge_and_inverse(&b) }.to yield_successive_args(*expected_yield)
+  end
 end
 
 describe EmailGraph::DirectedEdge do
