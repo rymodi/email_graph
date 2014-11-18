@@ -23,7 +23,7 @@ module EmailGraph
       @from_store.values.to_set.flatten
     end
 
-    # Get specific edge from +v+ to +w+
+    # A specific edge from +v+ to +w+
     def edge(v, w)
       (@from_store[v] || []).find{ |e| e.to == w }
     end
