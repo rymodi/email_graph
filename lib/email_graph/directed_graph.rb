@@ -66,6 +66,29 @@ module EmailGraph
         end
       end
     end
+
+    # Converts to an instance of EmailGraph::Undirected graph.
+    #
+    # The optional +edge_factory+ block should take a pair of an edge and its
+    # inverse (if it exists), and return either an undirected edge-ish or if there
+    # should be no edge between the two vertices, then return nil. If
+    # no block is passed, an +UndirectedEdge+ will be created if both the edge and
+    # its inverse exist.
+    #
+    # Only adds vertices that have edges, i.e., no isolated vertices in result.
+    def to_undirected(&edge_factory)
+      edge_factory ||= Proc.new{ |e1, e2| UndirectedEdge.new(e1.from, e1.to) if e1 && e2 }      
+
+      edges = Set.new
+      with_each_edge_and_inverse do |e, e_inverse|
+        new_edge = edge_factory.call(e, e_inverse)
+        edges.add(new_edge) if new_edge
+      end
+
+      UndirectedGraph.new.tap do |g|
+        edges.each{ |e| g.add_edge(e) } 
+      end
+    end
  
   end
 

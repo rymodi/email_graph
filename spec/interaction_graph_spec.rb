@@ -2,13 +2,12 @@ require 'spec_helper'
 require 'ostruct'
 
 describe EmailGraph::InteractionGraph do
+  let(:a0) { OpenStruct.new(name: "a0", email: "a0@example.com") }
+  let(:a1) { OpenStruct.new(name: "a1", email: "a1@example.com") }
+  let(:msg) { OpenStruct.new(from: [a0], to: [a1], date: Time.now) }
+  let(:g) { EmailGraph::InteractionGraph.new }
 
   describe '#add_message' do
-
-    let(:a0) { OpenStruct.new(name: "a0", email: "a0@example.com") }
-    let(:a1) { OpenStruct.new(name: "a1", email: "a1@example.com") }
-    let(:msg) { OpenStruct.new(from: [a0], to: [a1], date: Time.now) }
-    let(:g) { EmailGraph::InteractionGraph.new }
 
     it 'adds vertices (identities)' do 
       g.add_message(msg)
@@ -69,4 +68,23 @@ describe EmailGraph::InteractionGraph do
     end
 
   end
+
+  describe '#to_mutual_graph' do
+    
+    it 'returns with the correct edges and vertices using default filter' do
+      g.add_message(msg)
+      g.add_message(OpenStruct.new(from: [a1], to: [a0], date: Time.now))
+      mutual_graph = g.to_mutual_graph
+
+      expected_edges = [EmailGraph::MutualRelationship.new(a0.email, a1.email)]
+      expect(mutual_graph.edges).to contain_exactly(*expected_edges)
+
+      expected_vertices = [a0.email, a1.email]
+      expect(mutual_graph.vertices).to contain_exactly(*expected_vertices)
+
+      expect(mutual_graph.edge(a0.email, a1.email).interactions.size).to eq(2)
+    end
+
+  end
+
 end

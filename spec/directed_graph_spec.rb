@@ -38,6 +38,34 @@ describe EmailGraph::DirectedGraph do
 
     expect{ |b| g.with_each_edge_and_inverse(&b) }.to yield_successive_args(*expected_yield)
   end
+
+  describe '#to_undirected' do
+    
+    it 'returns with the correct edges and vertices using default edge_factory' do
+      undirected = g.to_undirected
+
+      expected_edges = [EmailGraph::UndirectedEdge.new(1, 2)]
+      expect(undirected.edges).to contain_exactly(*expected_edges)
+
+      expected_vertices = [1, 2]
+      expect(undirected.vertices).to contain_exactly(*expected_vertices)
+    end
+
+    it 'returns with the correct edges when using a provided edge_factory' do
+      at_least_one_way_edge_factory = Proc.new{ |e1, e2| EmailGraph::UndirectedEdge.new(e1.from, e1.to) if e1 }
+
+      undirected = g.to_undirected(&at_least_one_way_edge_factory)
+
+      expected_edges = [ EmailGraph::UndirectedEdge.new(1, 2),
+                         EmailGraph::UndirectedEdge.new(2, 3) ]
+      expect(undirected.edges).to contain_exactly(*expected_edges)
+
+      expected_vertices = [1, 2, 3]
+      expect(undirected.vertices).to contain_exactly(*expected_vertices)
+    end
+
+  end
+
 end
 
 describe EmailGraph::DirectedEdge do

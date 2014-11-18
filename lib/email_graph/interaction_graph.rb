@@ -46,6 +46,25 @@ module EmailGraph
       m
     end
 
+    # Converts graph into an undirected one, where edges are mutual relationships.
+    #
+    # The optional +edge_filter+ is used for determining the mutual relationship
+    # threshold based on the edge pair. It should take an edge and its inverse as
+    # arguments and return true if a +MutualRelationship+ should be created.
+    def to_mutual_graph(&edge_filter)
+      edge_filter ||= Proc.new{ |e, e_inverse| e && e_inverse }
+
+      edge_factory = Proc.new do |e, e_inverse|
+        if edge_filter.call(e, e_inverse)
+          MutualRelationship.new(e.from, e.to).tap do |r|
+            r.interactions.push(*(e.interactions + e_inverse.interactions))
+          end
+        end
+      end
+
+      to_undirected(&edge_factory)
+    end
+
     def default_email_processor
       Proc.new{ |email| Normailize::EmailAddress.new(email).normalized_address }
     end
@@ -67,6 +86,19 @@ module EmailGraph
       @interactions = []
     end
 
+    def add_interaction(date)
+      interactions << date
+    end
+  end
+
+  class MutualRelationship < UndirectedEdge
+    attr_reader :interactions
+
+    def initialize(v, w)
+      super
+      @interactions = []
+    end
+    
     def add_interaction(date)
       interactions << date
     end
