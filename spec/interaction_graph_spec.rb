@@ -50,5 +50,23 @@ describe EmailGraph::InteractionGraph do
       expect{g.add_message(msg_with_nil_email)}.to raise_exception(ArgumentError)
     end
 
+    it 'normalizes emails if no processor is provided' do
+      a_norm = OpenStruct.new(name: "Norm", email: "test@gmail.com")
+      a_not_norm = OpenStruct.new(name: "Not Norm", email: "tEs.t+blah@gmail.com")
+
+      msg = OpenStruct.new(from: [a_norm], to: [a_not_norm], date: Time.now)
+      g.add_message(msg)
+
+      expected_edge = EmailGraph::InteractionRelationship.new('test@gmail.com', 'test@gmail.com')
+      expect(g.edges).to contain_exactly(expected_edge)
+    end
+
+    it 'processes emails if a processor is provided' do
+      processor = Proc.new{ |e| "EMAIL@EMAIL.COM" }
+      g.add_message(msg, email_processor: processor)  
+
+      expect(g.vertices).to contain_exactly("EMAIL@EMAIL.COM")
+    end
+
   end
 end
