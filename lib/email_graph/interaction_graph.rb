@@ -71,7 +71,7 @@ module EmailGraph
           Normailize::EmailAddress.new(email).normalized_address
         rescue ArgumentError
           # Chokes on emails like "twitter-confirmation-blah=gmail.com@postmaster.twitter.com"
-          email.downcase
+          email && email.is_a?(String) ? email.downcase : email
         end
       end
     end
