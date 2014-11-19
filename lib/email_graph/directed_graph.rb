@@ -53,9 +53,14 @@ module EmailGraph
       e
     end
     
-    # Yields each edge and its inverse to the provided block. Does this
-    # efficiently, in that a pair is yielded only once (not again in reverse).
-    def with_each_edge_and_inverse(&block)
+    # Yields each edge and its inverse to the provided block.
+    #
+    # Option to provide edges; default is all edges.
+    # 
+    # A pair set is yielded only once (not again in reverse).
+    def with_each_edge_and_inverse(edges=nil, &block)
+      edges ||= self.edges
+
       yielded_pairs = Set.new
       edges.each do |e|
         pair = Set.new([e.from, e.to])
