@@ -36,6 +36,7 @@ module EmailGraph
           (1..limit).each_slice(batch_size) do |range|
             envelope_batch = imap.fetch(range, 'ENVELOPE') || []
             envelope_batch.each{ |e| yield e if block_given? }
+            puts "Fetched #{range.last}/#{limit}"
           end
         end
       end
