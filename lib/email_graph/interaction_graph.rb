@@ -66,7 +66,14 @@ module EmailGraph
     end
 
     def default_email_processor
-      Proc.new{ |email| Normailize::EmailAddress.new(email).normalized_address }
+      Proc.new do |email| 
+        begin
+          Normailize::EmailAddress.new(email).normalized_address
+        rescue ArgumentError
+          # Chokes on emails like "twitter-confirmation-blah=gmail.com@postmaster.twitter.com"
+          email.downcase
+        end
+      end
     end
 
   private
