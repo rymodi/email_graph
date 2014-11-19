@@ -48,9 +48,7 @@ module EmailGraph
     # exist and returns the edge
     def add_edge(e)
       add_vertex(e.from); add_vertex(e.to)
-      @from_store[e.from].add(e)
-      @to_store[e.to].add(e)
-      e
+      (@from_store[e.from].add?(e) && @to_store[e.to].add(e) && e) || edge(e.from, e.to)
     end
     
     # Yields each edge and its inverse to the provided block.

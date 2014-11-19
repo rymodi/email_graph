@@ -34,10 +34,8 @@ module EmailGraph
     # Adds an edge and associated vertices if they don't already
     # exist and returns the edge
     def add_edge(e)
-      e.vertices.each do |v| 
-        add_vertex(v)
-        @store[v].add(e)
-      end
+      v, w = *e.vertices
+      edge(v, w) || e.vertices.each{ |v| add_vertex(v); @store[v].add(e)}
     end
 
   end

@@ -29,6 +29,12 @@ describe EmailGraph::UndirectedGraph do
     expect(g.edges_with(3)).to contain_exactly(*expected_edges)
   end
 
+  it 'returns an existing edge if available when adding one' do
+    e = NewUndirectedEdgeType.new(2, 3)
+
+    expect(g.add_edge(e)).to be_instance_of(EmailGraph::UndirectedEdge)
+  end
+
 end
 
 describe EmailGraph::UndirectedEdge do
@@ -43,3 +49,5 @@ describe EmailGraph::UndirectedEdge do
   end
 
 end
+
+class NewUndirectedEdgeType < EmailGraph::UndirectedEdge; end

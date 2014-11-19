@@ -32,6 +32,12 @@ describe EmailGraph::DirectedGraph do
     expect(g.edges_to(2).map(&:from)).to contain_exactly(1)
   end
 
+  it 'returns existing edge when trying to add one with the same vertices' do
+    e = NewDirectedEdgeType.new(2, 3)
+
+    expect(g.add_edge(e)).to be_instance_of(EmailGraph::DirectedEdge)
+  end
+
   it 'iterates through each edge and its inverse' do
     expected_yield = [ [g.edge(1, 2), g.edge(2, 1)],
                        [g.edge(2, 3), nil] ]
@@ -81,4 +87,4 @@ describe EmailGraph::DirectedEdge do
 
 end
 
-
+class NewDirectedEdgeType < EmailGraph::DirectedEdge; end
