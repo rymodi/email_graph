@@ -20,7 +20,10 @@ module EmailGraph
 
     # All edges
     def edges
-      @from_store.values.to_set.flatten
+      @from_store.inject([]) do |r, (v, edges)|
+        r.push(*edges) if edges
+        r
+      end
     end
 
     # A specific edge from +v+ to +w+
