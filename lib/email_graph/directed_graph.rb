@@ -45,6 +45,7 @@ module EmailGraph
     def add_vertex(v)
       @from_store[v] ||= Set.new
       @to_store[v]   ||= Set.new
+      v
     end
 
     # Adds an edge and associated vertices if they don't already

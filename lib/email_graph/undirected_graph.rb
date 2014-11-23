@@ -32,6 +32,7 @@ module EmailGraph
     # Adds a vertex if it doesn't already exist and returns it
     def add_vertex(v)
       @store[v] ||= Set.new
+      v
     end
 
     # Adds an edge and associated vertices if they don't already
