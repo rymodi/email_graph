@@ -1,31 +1,13 @@
 # EmailGraph
 
-Build and analyze graph data structures from email history.
+Build and analyze relationship graph data from email history.
 
 Focus is on identities and interactions between them, for example:
-  * Who do I email with the most?
   * Who are my strong contacts, as identified by some two-way interaction
     threshold function?
+  * Which of my contacts can we infer are also strong contacts with one another?
   * What is the distribution of my email interactions with a given person over
     time?
-
-Subject lines and message bodies are currently ignored for simplification.
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'email_graph'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install email_graph
 
 ## Graph types
 
@@ -143,10 +125,18 @@ mailboxes = ['[Gmail]/All Mail', '[Gmail]/Trash']
 f.each_message(mailboxes: mailboxes){ |m| g.add_message(m) }
 ```
 
-## Contributing
+## Installation
 
-1. Fork it ( https://github.com/[my-github-username]/email_graph/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'email_graph'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install email_graph
